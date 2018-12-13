@@ -39,14 +39,14 @@ Maze Maze::generateMaze(int w, int h, int e) {
 		if (curr.y & 1) {
 			p = { curr.y, curr.x - 1 };	// left
 			if (p.x > 0 && !visit[p.y][p.x]) {
-				if (m.maze[p.y - 1][p.x - 1] && m.maze[p.y - 1][p.x]
-					&& m.maze[p.y][p.x - 1] && m.maze[p.y + 1][p.x - 1] && m.maze[p.y + 1][p.x])
+				if (m.maze[p.y - 1][p.x - 1] && m.maze[p.y - 1][p.x] && m.maze[p.y][p.x - 1] 
+					&& (curr.y == m.height - 1 || (m.maze[p.y + 1][p.x - 1] && m.maze[p.y + 1][p.x])))
 					move[0] = true;
 			}
 			p = { curr.y, curr.x + 1 };	// right
 			if (p.x < m.width - 1 && !visit[p.y][p.x]) {
-				if (m.maze[p.y - 1][p.x + 1] && m.maze[p.y - 1][p.x]
-					&& m.maze[p.y][p.x + 1] && m.maze[p.y + 1][p.x + 1] && m.maze[p.y + 1][p.x])
+				if (m.maze[p.y - 1][p.x + 1] && m.maze[p.y - 1][p.x] && m.maze[p.y][p.x + 1]
+					&& (curr.y == m.height - 1 || (m.maze[p.y + 1][p.x + 1] && m.maze[p.y + 1][p.x])))
 					move[1] = true;
 			}
 		}
@@ -101,6 +101,10 @@ Maze Maze::generateMaze(int w, int h, int e) {
 			s.pop();
 		}
 	}
+
+	for (i = 0; i < m.height; i++)
+		delete[] visit[i];
+	delete visit;
 
 	return m;
 }

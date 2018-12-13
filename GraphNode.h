@@ -15,7 +15,7 @@ public:
 		up = down = left = right = nullptr;
 		visit = false;
 	}
-	~GraphNode();
+	~GraphNode() {}
 };
 
 #endif

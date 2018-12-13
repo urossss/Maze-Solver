@@ -4,16 +4,11 @@
 
 #include <iostream>
 #include <list>
+#include "Point.h"
 using namespace std;
 
 class Maze {
-	struct Point {
-		int y = 0, x = 1;
-
-		friend ostream& operator<<(ostream& os, const Point &p) {
-			return os << "(" << p.x << ", " << p.y << ")";
-		}
-	};
+	friend class MazeGraph;
 
 	Point start = { 0, 1 };
 	list<Point> exit;

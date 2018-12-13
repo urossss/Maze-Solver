@@ -95,6 +95,8 @@ MazeGraph* MazeGraph::createGraph(const Maze & m) {
 		}
 	}
 
+	delete[] topNodes;
+
 	cout << g->nodeCount << endl;
 
 	return g;
