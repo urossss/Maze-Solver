@@ -22,7 +22,7 @@ public:
 
 	static MazeGraph* createGraph(const Maze &m);
 
-	void printNodes() {
+	void printNodes() const {
 		for (GraphNode *node : nodes) {
 			cout << node->pos << endl;
 		}

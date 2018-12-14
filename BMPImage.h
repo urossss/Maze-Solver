@@ -49,7 +49,7 @@ public:
 	friend istream& operator>>(istream &is, BMPImage &img);
 	friend ostream& operator<<(ostream &os, const BMPImage &img);
 
-	Maze convertToMaze();
+	Maze convertToMaze() const;
 private:
 	void deleteImg();
 	void copy(const BMPImage &img);

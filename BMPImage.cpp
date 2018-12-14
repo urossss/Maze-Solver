@@ -40,7 +40,7 @@ BMPImage::BMPImage(int w, int h, char* d) {
 	}
 }
 
-Maze BMPImage::convertToMaze() {
+Maze BMPImage::convertToMaze() const {
 	int w = width, h = height, i, j;
 	char r, g, b;
 	char **maze = new char*[h];
