@@ -16,6 +16,7 @@ Maze Maze::generateMaze(int w, int h, int e) {
 
 	m.start = { 0, 1 };
 	m.numberOfExits = 0;
+	int exitDistance = (m.width - e + 1) / e;
 
 	m.maze = new char*[m.height];
 	bool **visit = new bool*[m.height];
@@ -38,15 +39,15 @@ Maze Maze::generateMaze(int w, int h, int e) {
 		Point p;
 		if (curr.y & 1) {
 			p = { curr.y, curr.x - 1 };	// left
-			if (p.x > 0 && !visit[p.y][p.x]) {
-				if (m.maze[p.y - 1][p.x - 1] && m.maze[p.y - 1][p.x] && m.maze[p.y][p.x - 1] 
-					&& (curr.y == m.height - 1 || (m.maze[p.y + 1][p.x - 1] && m.maze[p.y + 1][p.x])))
+			if (p.x > 0 && curr.y < m.height - 1 && !visit[p.y][p.x]) {
+				if (m.maze[p.y - 1][p.x - 1] && m.maze[p.y - 1][p.x] && m.maze[p.y][p.x - 1]
+					&& (p.y == m.height - 1 || (m.maze[p.y + 1][p.x - 1] && m.maze[p.y + 1][p.x])))
 					move[0] = true;
 			}
 			p = { curr.y, curr.x + 1 };	// right
-			if (p.x < m.width - 1 && !visit[p.y][p.x]) {
+			if (p.x < m.width - 1 && curr.y < m.height - 1 && !visit[p.y][p.x]) {
 				if (m.maze[p.y - 1][p.x + 1] && m.maze[p.y - 1][p.x] && m.maze[p.y][p.x + 1]
-					&& (curr.y == m.height - 1 || (m.maze[p.y + 1][p.x + 1] && m.maze[p.y + 1][p.x])))
+					&& (p.y == m.height - 1 || (m.maze[p.y + 1][p.x + 1] && m.maze[p.y + 1][p.x])))
 					move[1] = true;
 			}
 		}
@@ -65,6 +66,13 @@ Maze Maze::generateMaze(int w, int h, int e) {
 				move[3] = true;
 			if (b && p.y == m.height - 1 && m.numberOfExits < e)
 				move[3] = true;
+			if (move[3] && p.y == m.height - 1)
+				for (Point pexit : m.exit) {
+					if (abs(p.x - pexit.x) < exitDistance) {
+						move[3] = false;
+						break;
+					}
+				}
 		}
 
 		if (move[0] || move[1] || move[2] || move[3]) {
@@ -113,9 +121,9 @@ char* Maze::convertToPixelData() const {
 	char *res = new char[width * height * 3];
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++) {
-			res[3 * ((height - i - 1) * width + j) + 0] = !maze[i][j] ? 255 : 0;
-			res[3 * ((height - i - 1) * width + j) + 1] = !maze[i][j] ? 255 : 0;
-			res[3 * ((height - i - 1) * width + j) + 2] = !maze[i][j] ? 255 : 0;
+			res[3 * ((height - i - 1) * width + j) + 0] = maze[i][j] - 1;	// !maze[i][j] ? 255 : 0;
+			res[3 * ((height - i - 1) * width + j) + 1] = maze[i][j] - 1;	// !maze[i][j] ? 255 : 0;
+			res[3 * ((height - i - 1) * width + j) + 2] = maze[i][j] - 1;	// !maze[i][j] ? 255 : 0;
 		}
 	return res;
 }
