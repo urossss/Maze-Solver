@@ -59,10 +59,12 @@ Maze BMPImage::convertToMaze() const {
 }
 
 void BMPImage::deleteImg() {
+	delete header;
+	delete colorTable;
 	delete data;
 	delete gap1;
 	delete gap2;
-	data = gap1 = gap2 = nullptr;
+	header = colorTable = data = gap1 = gap2 = nullptr;
 }
 
 void BMPImage::copy(const BMPImage & img) {
