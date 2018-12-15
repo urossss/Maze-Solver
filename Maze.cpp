@@ -185,6 +185,7 @@ void Maze::move(Maze &m) {
 }
 
 istream& operator>>(istream & is, Maze & m) {
+	m.deleteMaze();
 	is >> m.width >> m.height;
 	m.width = (m.width > 5 ? m.width : 5);
 	m.height = (m.height > 5 ? m.height : 5);

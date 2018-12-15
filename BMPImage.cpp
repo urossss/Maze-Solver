@@ -38,6 +38,8 @@ BMPImage::BMPImage(int w, int h, char* d) {
 			data[i * rowSize + j] = 0;
 		}
 	}
+
+	delete d;	// because we wanted to convert this data into an image, we don't need it anymore
 }
 
 Maze BMPImage::convertToMaze() const {

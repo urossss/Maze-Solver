@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <cstring>
 #include "Maze.h"
 using namespace std;
 
