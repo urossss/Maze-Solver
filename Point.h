@@ -2,6 +2,7 @@
 #define _POINT_H_
 
 #include <iostream>
+using namespace std;
 
 struct Point {
 	int y = 0, x = 1;
