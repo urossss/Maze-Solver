@@ -50,6 +50,9 @@ public:
 	friend ostream& operator<<(ostream &os, const BMPImage &img);
 
 	Maze convertToMaze() const;
+
+	void exportAsBMP(string filename);
+	void importFromBMP(string filename);
 private:
 	void deleteImg();
 	void copy(const BMPImage &img);

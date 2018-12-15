@@ -189,3 +189,17 @@ ostream & operator<<(ostream & os, const BMPImage & img) {
 		os.write(img.gap2, sizeof(char) * img.gap2Length);
 	return os;
 }
+
+void BMPImage::exportAsBMP(string filename) {
+	ofstream out(filename, ios_base::binary);
+	if (!out.is_open()) exit(2);
+	out << *this;
+	out.close();
+}
+
+void BMPImage::importFromBMP(string filename) {
+	ifstream in(filename, ios_base::binary);
+	if (!in.is_open()) exit(2);
+	in >> *this;
+	in.close();
+}
