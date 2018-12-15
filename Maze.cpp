@@ -1,5 +1,6 @@
 #include "Maze.h"
 #include <stack>
+#include <algorithm>
 
 
 Maze Maze::generateMaze(int w, int h) {
@@ -121,11 +122,36 @@ char* Maze::convertToPixelData() const {
 	char *res = new char[width * height * 3];
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++) {
-			res[3 * ((height - i - 1) * width + j) + 0] = maze[i][j] - 1;	// !maze[i][j] ? 255 : 0;
-			res[3 * ((height - i - 1) * width + j) + 1] = maze[i][j] - 1;	// !maze[i][j] ? 255 : 0;
-			res[3 * ((height - i - 1) * width + j) + 2] = maze[i][j] - 1;	// !maze[i][j] ? 255 : 0;
+			// 1 - wall, black
+			// 0 - path, white
+			// 2 - solution, red
+			res[3 * ((height - i - 1) * width + j) + 0] = (maze[i][j] != 0 && maze[i][j] != 1) ? 0 : maze[i][j] - 1;	// b
+			res[3 * ((height - i - 1) * width + j) + 1] = (maze[i][j] != 0 && maze[i][j] != 1) ? 0 : maze[i][j] - 1;	// g
+			res[3 * ((height - i - 1) * width + j) + 2] = (maze[i][j] != 0 && maze[i][j] != 1) ? 255 : maze[i][j] - 1;	// r
 		}
 	return res;
+}
+
+void Maze::setPathColor(list<Point> path) {
+	Point p1, p2;
+	int x, y;
+	for (list<Point>::iterator i = path.begin(); i != path.end(); ) {
+		p1 = *i++;
+		if (i == path.end())
+			break;
+		p2 = *i;
+		if (p1.x == p2.x) {
+			int y0 = min(p1.y, p2.y), y1 = max(p1.y, p2.y);
+			for (y = y0, x = p1.x; y <= y1; y++) {
+				maze[y][x] = 2;
+			}
+		} else {
+			int x0 = min(p1.x, p2.x), x1 = max(p1.x, p2.x);
+			for (x = x0, y = p1.y; x <= x1; x++) {
+				maze[y][x] = 2;
+			}
+		}
+	}
 }
 
 void Maze::deleteMaze() {

@@ -29,6 +29,7 @@ public:
 			}
 			if (maze[height - 1][i] == 0) {
 				exit.push_back({ height - 1, i });
+				numberOfExits++;
 			}
 		}
 	}
@@ -71,6 +72,8 @@ public:
 	friend ostream& operator<<(ostream &os, const Maze &m);
 
 	char* convertToPixelData() const;
+
+	void setPathColor(list<Point> path);
 
 	static Maze generateMaze(int w, int h);
 	static Maze generateMaze(int w, int h, int e);
