@@ -1,4 +1,6 @@
 #include "MazeGraph.h"
+#include <queue>
+#include <stack>
 
 
 MazeGraph* MazeGraph::createGraph(const Maze & m) {
@@ -21,6 +23,7 @@ MazeGraph* MazeGraph::createGraph(const Maze & m) {
 	}
 
 	g->start = node;
+	topNodes[node->pos.x] = node;
 	g->nodes.push_back(node);
 	g->nodeCount = 1;
 
@@ -73,7 +76,7 @@ MazeGraph* MazeGraph::createGraph(const Maze & m) {
 						topNodes[x]->down = node;
 				}
 
-				if (!m.maze[y + -1][x]) {	// if path below, put this one in topNodes for new connection below
+				if (!m.maze[y + 1][x]) {	// if path below, put this one in topNodes for new connection below
 					topNodes[x] = node;
 				} else {
 					topNodes[x] = nullptr;
@@ -100,6 +103,59 @@ MazeGraph* MazeGraph::createGraph(const Maze & m) {
 	cout << g->nodeCount << endl;
 
 	return g;
+}
+
+list<Point> MazeGraph::solveBFS() {
+	list<Point> sol;
+
+	queue<GraphNode*> q;
+	q.push(start);
+
+	bool solved = false;
+	GraphNode* curr = nullptr;
+	while (!q.empty()) {
+		curr = q.front();
+		curr->visited = true;
+		q.pop();
+
+		for (GraphNode *pnode : exit) {
+			if (pnode == curr) {
+				solved = true;
+				break;
+			}
+		}
+
+		if (solved)
+			break;
+
+		if (curr->down && !curr->down->visited) {
+			curr->down->prev = curr;
+			q.push(curr->down);
+		}
+		if (curr->right && !curr->right->visited) {
+			curr->right->prev = curr;
+			q.push(curr->right);
+		}
+		if (curr->left && !curr->left->visited) {
+			curr->left->prev = curr;
+			q.push(curr->left);
+		}
+		if (curr->up && !curr->up->visited) {
+			curr->up->prev = curr;
+			q.push(curr->up);
+		}
+	}
+
+	while (curr) {
+		sol.push_front(Point(curr->pos));
+		curr = curr->prev;
+	}
+
+	for (Point p : sol) {
+		cout << p << endl;
+	}
+
+	return sol;
 }
 
 MazeGraph::~MazeGraph() {

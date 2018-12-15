@@ -22,6 +22,8 @@ public:
 
 	static MazeGraph* createGraph(const Maze &m);
 
+	list<Point> solveBFS();
+
 	void printNodes() const {
 		for (GraphNode *node : nodes) {
 			cout << node->pos << endl;

@@ -8,12 +8,13 @@ class GraphNode {
 	friend class MazeGraph;
 
 	GraphNode *up, *down, *left, *right;
+	GraphNode *prev;
 	Point pos;
-	bool visit;
+	bool visited;
 public:
 	GraphNode(int y, int x) : pos({ y, x }) {
-		up = down = left = right = nullptr;
-		visit = false;
+		up = down = left = right = prev =  nullptr;
+		visited = false;
 	}
 	~GraphNode() {}
 };
