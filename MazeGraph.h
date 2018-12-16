@@ -23,6 +23,7 @@ public:
 	static MazeGraph* createGraph(const Maze &m);
 
 	list<Point> solveBFS();
+	list<Point> solveDFS();
 
 	void printNodes() const {
 		for (GraphNode *node : nodes) {

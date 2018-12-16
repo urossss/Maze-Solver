@@ -1,6 +1,7 @@
 #include "MazeGraph.h"
 #include <queue>
-//#include <stack>
+#include <stack>
+#include <ctime>
 
 
 MazeGraph* MazeGraph::createGraph(const Maze & m) {
@@ -100,7 +101,7 @@ MazeGraph* MazeGraph::createGraph(const Maze & m) {
 
 	delete[] topNodes;
 
-	cout << "Number of nodes:" << g->nodeCount << endl;
+	cout << "Number of nodes: " << g->nodeCount << endl;
 
 	return g;
 }
@@ -116,9 +117,11 @@ list<Point> MazeGraph::solveBFS() {
 	int visited = 0;
 	while (!q.empty()) {
 		curr = q.front();
-		curr->visited = true;
-		visited++;
-		q.pop();
+
+		if (!curr->visited) {
+			curr->visited = true;
+			visited++;
+		}
 
 		for (GraphNode *pnode : exit) {
 			if (pnode == curr) {
@@ -132,20 +135,35 @@ list<Point> MazeGraph::solveBFS() {
 
 		if (curr->down && !curr->down->visited) {
 			curr->down->prev = curr;
+			curr->down->visited = true;
+			visited++;
 			q.push(curr->down);
 		}
 		if (curr->right && !curr->right->visited) {
 			curr->right->prev = curr;
+			curr->right->visited = true;
+			visited++;
 			q.push(curr->right);
 		}
 		if (curr->left && !curr->left->visited) {
 			curr->left->prev = curr;
+			curr->left->visited = true;
+			visited++;
 			q.push(curr->left);
 		}
 		if (curr->up && !curr->up->visited) {
 			curr->up->prev = curr;
+			curr->up->visited = true;
+			visited++;
 			q.push(curr->up);
 		}
+
+		q.pop();
+	}
+
+	if (!solved) {
+		cout << "Maze is not solvable.\n";
+		return sol;
 	}
 
 	while (curr) {
@@ -155,6 +173,83 @@ list<Point> MazeGraph::solveBFS() {
 
 	cout << "Nodes visited: " << visited << endl;
 	cout << "Path length: " << sol.size() << endl;
+
+	for (GraphNode *node : nodes) {
+		node->visited = false;
+	}
+
+	return sol;
+}
+
+list<Point> MazeGraph::solveDFS() {
+	list<Point> sol;
+
+	stack<GraphNode*> s;
+	s.push(start);
+
+	bool solved = false;
+	GraphNode* curr = nullptr;
+	int visited = 0;
+	while (!s.empty()) {
+		curr = s.top();
+		if (!curr->visited) {
+			curr->visited = true;
+			visited++;
+
+			for (GraphNode *pnode : exit) {
+				if (pnode == curr) {
+					solved = true;
+					break;
+				}
+			}
+		}
+
+		if (solved)
+			break;
+
+		if (curr->down && !curr->down->visited) {
+			curr->down->prev = curr;
+			s.push(curr->down);
+			continue;
+		}
+		if (curr->right && !curr->right->visited) {
+			curr->right->prev = curr;
+			s.push(curr->right);
+			continue;
+		}
+		if (curr->left && !curr->left->visited) {
+			curr->left->prev = curr;
+			s.push(curr->left);
+			continue;
+		}
+		if (curr->up && !curr->up->visited) {
+			curr->up->prev = curr;
+			s.push(curr->up);
+			continue;
+		}
+		s.pop();
+	}
+
+	if (!solved) {
+		cout << "Maze is not solvable.\n";
+		return sol;
+	}
+
+	while (curr) {
+		sol.push_front(Point(curr->pos));
+		curr = curr->prev;
+	}
+
+	cout << "Nodes visited: " << visited << endl;
+	cout << "Path length: " << sol.size() << endl;
+
+	//clock_t t1 = clock();
+	for (GraphNode *node : nodes) {
+		node->visited = false;
+	}
+	//clock_t t2 = clock();
+	//double d = (double) (t2 - t1) / CLOCKS_PER_SEC;
+	//cout << "Time elapsed for reseting: " << d << "s" << endl;
 
 	return sol;
 }

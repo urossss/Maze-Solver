@@ -23,7 +23,11 @@ void printMazeLoadingMenu() {
 }
 
 void printSolveMenu() {
-	// to do...
+	cout << "\nChoose a solving method:\n";
+	cout << "	1. BFS\n";
+	cout << "	2. DFS\n";
+	cout << "	0. Exit\n";
+	cout << "Your choice: ";
 }
 
 MazeGraph* createGraph(const Maze &m) {
@@ -52,7 +56,7 @@ int main() {
 	BMPImage *i = nullptr;
 	MazeGraph *g = nullptr;
 	Maze m, *sol = nullptr;
-	bool loaded = false;
+	bool done = false;
 
 	while (1) {
 		printMainMenu();
@@ -60,12 +64,12 @@ int main() {
 
 		switch (choice) {
 		case 1:
-			loaded = false;
+			done = false;
 			delete g;
 			g = nullptr;
 			delete i;
 			i = nullptr;
-			while (!loaded) {
+			while (!done) {
 				printMazeLoadingMenu();
 				cin >> choice;
 				switch (choice) {
@@ -86,7 +90,7 @@ int main() {
 					delete i;
 					i = nullptr;
 
-					loaded = true;
+					done = true;
 					break;
 				case 2:
 					cout << "Enter filename: ";
@@ -103,7 +107,7 @@ int main() {
 					delete i;
 					i = nullptr;
 
-					loaded = true;
+					done = true;
 					break;
 				case 3:
 					cout << "Enter maze dimensions and maze data (1 for walls and 0 for path): ";
@@ -114,7 +118,7 @@ int main() {
 					delete i;
 					i = nullptr;
 
-					loaded = true;
+					done = true;
 					break;
 				case 0:
 					exit(0);
@@ -125,7 +129,7 @@ int main() {
 			}
 			break;
 		case 2:
-			if (!loaded) {
+			if (!done) {
 				cout << "You need to load a maze first.\n";
 				break;
 			}
@@ -133,7 +137,7 @@ int main() {
 			g = createGraph(m);
 			break;
 		case 3:
-			if (!loaded) {
+			if (!done) {
 				cout << "You need to load a maze first.\n";
 				break;
 			}
@@ -142,24 +146,45 @@ int main() {
 
 			sol = new Maze(m);
 
-			t1 = clock();
-			cout << "\nSolving..." << endl;
-			sol->setPathColor(g->solveBFS());
-			t2 = clock();
+			done = false;
+			while (!done) {
+				printSolveMenu();
+				cin >> choice;
+				switch (choice) {
+				case 1:
+					t1 = clock();
+					cout << "\nSolving..." << endl;
+					sol->setPathColor(g->solveBFS());
+					t2 = clock();
+					done = true;
+					break;
+				case 2:
+					t1 = clock();
+					cout << "\nSolving..." << endl;
+					sol->setPathColor(g->solveDFS());
+					t2 = clock();
+					done = true;
+					break;
+				case 0:
+					exit(0);
+				default:
+					cout << "Invalid choice, try again.\n";
+					break;
+				}
+			}
+			
 			d = (double) (t2 - t1) / CLOCKS_PER_SEC;
 			cout << "Time elapsed: " << d << "s" << endl;
 
 			i = new BMPImage(*sol);
-
-			delete sol;
-			sol = nullptr;
-
 			cout << "Enter a name of solution output file: ";
 			cin >> fileName;
 			i->exportAsBMP(fileName);
+
+			delete sol;
+			sol = nullptr;
 			delete i;
 			i = nullptr;
-
 			break;
 		case 0:
 			exit(0);
