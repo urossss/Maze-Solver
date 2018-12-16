@@ -1,6 +1,6 @@
 #include "MazeGraph.h"
 #include <queue>
-#include <stack>
+//#include <stack>
 
 
 MazeGraph* MazeGraph::createGraph(const Maze & m) {
@@ -100,7 +100,7 @@ MazeGraph* MazeGraph::createGraph(const Maze & m) {
 
 	delete[] topNodes;
 
-	cout << g->nodeCount << endl;
+	cout << "Number of nodes:" << g->nodeCount << endl;
 
 	return g;
 }
@@ -113,9 +113,11 @@ list<Point> MazeGraph::solveBFS() {
 
 	bool solved = false;
 	GraphNode* curr = nullptr;
+	int visited = 0;
 	while (!q.empty()) {
 		curr = q.front();
 		curr->visited = true;
+		visited++;
 		q.pop();
 
 		for (GraphNode *pnode : exit) {
@@ -151,9 +153,8 @@ list<Point> MazeGraph::solveBFS() {
 		curr = curr->prev;
 	}
 
-	for (Point p : sol) {
-		cout << p << endl;
-	}
+	cout << "Nodes visited: " << visited << endl;
+	cout << "Path length: " << sol.size() << endl;
 
 	return sol;
 }

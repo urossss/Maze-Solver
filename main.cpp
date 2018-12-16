@@ -51,8 +51,9 @@ int main() {
 	string fileName;
 	BMPImage *i = nullptr;
 	MazeGraph *g = nullptr;
-	Maze m;
+	Maze m, *sol = nullptr;
 	bool loaded = false;
+
 	while (1) {
 		printMainMenu();
 		cin >> choice;
@@ -79,8 +80,12 @@ int main() {
 					t2 = clock();
 					d = (double) (t2 - t1) / CLOCKS_PER_SEC;
 					cout << "Time elapsed: " << d << "s" << endl;
+
 					i = new BMPImage(m);
 					i->exportAsBMP("maze.bmp");
+					delete i;
+					i = nullptr;
+
 					loaded = true;
 					break;
 				case 2:
@@ -94,6 +99,10 @@ int main() {
 					t2 = clock();
 					d = (double) (t2 - t1) / CLOCKS_PER_SEC;
 					cout << "Time elapsed: " << d << "s" << endl;
+
+					delete i;
+					i = nullptr;
+
 					loaded = true;
 					break;
 				case 3:
@@ -101,6 +110,10 @@ int main() {
 					cin >> m;
 					i = new BMPImage(m);
 					i->exportAsBMP("maze.bmp");
+
+					delete i;
+					i = nullptr;
+
 					loaded = true;
 					break;
 				case 0:
@@ -127,18 +140,26 @@ int main() {
 			if (!g)
 				g = createGraph(m);
 
+			sol = new Maze(m);
+
 			t1 = clock();
 			cout << "\nSolving..." << endl;
-			m.setPathColor(g->solveBFS());
+			sol->setPathColor(g->solveBFS());
 			t2 = clock();
 			d = (double) (t2 - t1) / CLOCKS_PER_SEC;
 			cout << "Time elapsed: " << d << "s" << endl;
 
-			i = new BMPImage(m);
+			i = new BMPImage(*sol);
+
+			delete sol;
+			sol = nullptr;
 
 			cout << "Enter a name of solution output file: ";
 			cin >> fileName;
 			i->exportAsBMP(fileName);
+			delete i;
+			i = nullptr;
+
 			break;
 		case 0:
 			exit(0);

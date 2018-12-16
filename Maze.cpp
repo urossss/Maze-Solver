@@ -17,7 +17,7 @@ Maze Maze::generateMaze(int w, int h, int e) {
 
 	m.start = { 0, 1 };
 	m.numberOfExits = 0;
-	int exitDistance = (m.width - e + 1) / e;
+	int exitDistance = (m.width - e) / e;
 
 	m.maze = new char*[m.height];
 	bool **visit = new bool*[m.height];
@@ -68,10 +68,15 @@ Maze Maze::generateMaze(int w, int h, int e) {
 			if (b && p.y == m.height - 1 && m.numberOfExits < e)
 				move[3] = true;
 			if (move[3] && p.y == m.height - 1)
-				for (Point pexit : m.exit) {
-					if (abs(p.x - pexit.x) < exitDistance) {
+				if (e == 1) {
+					if (m.width - p.x > 3)
 						move[3] = false;
-						break;
+				} else {
+					for (Point pexit : m.exit) {
+						if (abs(p.x - pexit.x) < exitDistance) {
+							move[3] = false;
+							break;
+						}
 					}
 				}
 		}
