@@ -24,6 +24,7 @@ public:
 
 	list<Point> solveBFS();
 	list<Point> solveDFS();
+	list<Point> solveDijkstra();
 
 	void printNodes() const {
 		for (GraphNode *node : nodes) {

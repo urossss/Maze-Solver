@@ -10,6 +10,10 @@ struct Point {
 	friend ostream& operator<<(ostream& os, const Point &p) {
 		return os << "(" << p.y << ", " << p.x << ")";
 	}
+
+	int manhattanDistance(const Point &p) const {
+		return abs(p.x - x) + abs(p.y - y);
+	}
 };
 
 #endif

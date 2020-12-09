@@ -26,6 +26,7 @@ void printSolveMenu() {
 	cout << "\nChoose a solving method:\n";
 	cout << "	1. BFS\n";
 	cout << "	2. DFS\n";
+	cout << "	3. Dijkstra\n";
 	cout << "	0. Exit\n";
 	cout << "Your choice: ";
 }
@@ -162,6 +163,13 @@ int main() {
 					t1 = clock();
 					cout << "\nSolving..." << endl;
 					sol->setPathColor(g->solveDFS());
+					t2 = clock();
+					done = true;
+					break;
+				case 3:
+					t1 = clock();
+					cout << "\nSolving..." << endl;
+					sol->setPathColor(g->solveDijkstra());
 					t2 = clock();
 					done = true;
 					break;

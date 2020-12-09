@@ -2,6 +2,8 @@
 #include <queue>
 #include <stack>
 #include <ctime>
+#include <unordered_map>
+#include <vector>
 
 
 MazeGraph* MazeGraph::createGraph(const Maze & m) {
@@ -166,13 +168,18 @@ list<Point> MazeGraph::solveBFS() {
 		return sol;
 	}
 
+	int length = 0;
 	while (curr) {
 		sol.push_front(Point(curr->pos));
+		if (curr->prev) {
+			length += curr->pos.manhattanDistance(curr->prev->pos);
+		}
 		curr = curr->prev;
 	}
 
 	cout << "Nodes visited: " << visited << endl;
-	cout << "Path length: " << sol.size() << endl;
+	cout << "Path node count: " << sol.size() << endl;
+	cout << "Path length: " << length << endl;
 
 	for (GraphNode *node : nodes) {
 		node->visited = false;
@@ -235,13 +242,18 @@ list<Point> MazeGraph::solveDFS() {
 		return sol;
 	}
 
+	int length = 0;
 	while (curr) {
 		sol.push_front(Point(curr->pos));
+		if (curr->prev) {
+			length += curr->pos.manhattanDistance(curr->prev->pos);
+		}
 		curr = curr->prev;
 	}
 
 	cout << "Nodes visited: " << visited << endl;
-	cout << "Path length: " << sol.size() << endl;
+	cout << "Path node count: " << sol.size() << endl;
+	cout << "Path length: " << length << endl;
 
 	//clock_t t1 = clock();
 	for (GraphNode *node : nodes) {
@@ -250,6 +262,98 @@ list<Point> MazeGraph::solveDFS() {
 	//clock_t t2 = clock();
 	//double d = (double) (t2 - t1) / CLOCKS_PER_SEC;
 	//cout << "Time elapsed for reseting: " << d << "s" << endl;
+
+	return sol;
+}
+
+list<Point> MazeGraph::solveDijkstra() {
+	list<Point> sol;
+
+	unordered_map<GraphNode*, int> dist;
+	unordered_map<GraphNode*, vector<GraphNode*>> path;
+	for (GraphNode *node : this->nodes) {
+		dist[node] = INT_MAX;
+	}
+	dist[this->start] = 0;
+	path[this->start] = { this->start };
+
+	GraphNode *end = nullptr;
+	int visited = 0;
+
+	for (int i = 0; i < this->nodeCount; i++) {
+		GraphNode *curr = nullptr;
+		for (GraphNode *node : this->nodes) {
+			if (!node->visited && (!curr || dist[node] < dist[curr])) {
+				curr = node;
+			}
+		}
+
+		for (GraphNode *pnode : exit) {
+			if (pnode == curr) {
+				end = curr;
+				break;
+			}
+		}
+
+		curr->visited = true;
+		visited++;
+
+		if (curr->down && !curr->down->visited) {
+			int d = curr->pos.manhattanDistance(curr->down->pos);
+			if (dist[curr] + d < dist[curr->down]) {
+				dist[curr->down] = dist[curr] + d;
+				path[curr->down] = path[curr];
+				path[curr->down].push_back(curr->down);
+			}
+		}
+		if (curr->right && !curr->right->visited) {
+			int d = curr->pos.manhattanDistance(curr->right->pos);
+			if (dist[curr] + d < dist[curr->right]) {
+				dist[curr->right] = dist[curr] + d;
+				path[curr->right] = path[curr];
+				path[curr->right].push_back(curr->right);
+			}
+		}
+		if (curr->left && !curr->left->visited) {
+			int d = curr->pos.manhattanDistance(curr->left->pos);
+			if (dist[curr] + d < dist[curr->left]) {
+				dist[curr->left] = dist[curr] + d;
+				path[curr->left] = path[curr];
+				path[curr->left].push_back(curr->left);
+			}
+		}
+		if (curr->up && !curr->up->visited) {
+			int d = curr->pos.manhattanDistance(curr->up->pos);
+			if (dist[curr] + d < dist[curr->up]) {
+				dist[curr->up] = dist[curr] + d;
+				path[curr->up] = path[curr];
+				path[curr->up].push_back(curr->up);
+			}
+		}
+	}
+
+	if (!end) {
+		cout << "Maze is not solvable.\n";
+		return sol;
+	}
+
+	GraphNode *prev = nullptr;
+	int length = 0;
+	for (GraphNode *node : path[end]) {
+		sol.push_back(Point(node->pos));
+		if (prev) {
+			length += node->pos.manhattanDistance(prev->pos);
+		}
+		prev = node;
+	}
+
+	cout << "Nodes visited: " << visited << endl;
+	cout << "Path node count: " << sol.size() << endl;
+	cout << "Path length: " << length << endl;
+
+	for (GraphNode *node : nodes) {
+		node->visited = false;
+	}
 
 	return sol;
 }
