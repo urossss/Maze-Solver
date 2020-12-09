@@ -17,6 +17,12 @@ class MazeGraph {
 
 	MazeGraph() {}
 	MazeGraph(const MazeGraph &) = delete;
+
+	enum HeuristicType {
+		NONE, STRAIGHT_LINE
+	};
+	list<Point> solveDijkstraWithHeuristic(HeuristicType);
+
 public:
 	~MazeGraph();
 
@@ -25,6 +31,7 @@ public:
 	list<Point> solveBFS();
 	list<Point> solveDFS();
 	list<Point> solveDijkstra();
+	list<Point> solveAStar();
 
 	void printNodes() const {
 		for (GraphNode *node : nodes) {

@@ -14,6 +14,10 @@ struct Point {
 	int manhattanDistance(const Point &p) const {
 		return abs(p.x - x) + abs(p.y - y);
 	}
+
+	double euclideanDistance(const Point &p) const {
+		return sqrt(pow(p.x - x, 2) + pow(p.y - y, 2));
+	}
 };
 
 #endif

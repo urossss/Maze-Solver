@@ -27,6 +27,7 @@ void printSolveMenu() {
 	cout << "	1. BFS\n";
 	cout << "	2. DFS\n";
 	cout << "	3. Dijkstra\n";
+	cout << "	4. A*\n";
 	cout << "	0. Exit\n";
 	cout << "Your choice: ";
 }
@@ -151,34 +152,30 @@ int main() {
 			while (!done) {
 				printSolveMenu();
 				cin >> choice;
+				done = true;
+				cout << "\nSolving..." << endl;
+				t1 = clock();
 				switch (choice) {
 				case 1:
-					t1 = clock();
-					cout << "\nSolving..." << endl;
 					sol->setPathColor(g->solveBFS());
-					t2 = clock();
-					done = true;
 					break;
 				case 2:
-					t1 = clock();
-					cout << "\nSolving..." << endl;
 					sol->setPathColor(g->solveDFS());
-					t2 = clock();
-					done = true;
 					break;
 				case 3:
-					t1 = clock();
-					cout << "\nSolving..." << endl;
 					sol->setPathColor(g->solveDijkstra());
-					t2 = clock();
-					done = true;
+					break;
+				case 4:
+					sol->setPathColor(g->solveAStar());
 					break;
 				case 0:
 					exit(0);
 				default:
 					cout << "Invalid choice, try again.\n";
+					done = false;
 					break;
 				}
+				t2 = clock();
 			}
 			
 			d = (double) (t2 - t1) / CLOCKS_PER_SEC;

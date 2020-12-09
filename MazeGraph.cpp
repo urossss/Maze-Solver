@@ -267,12 +267,34 @@ list<Point> MazeGraph::solveDFS() {
 }
 
 list<Point> MazeGraph::solveDijkstra() {
+	return solveDijkstraWithHeuristic(NONE);
+}
+
+list<Point> MazeGraph::solveAStar() {
+	return solveDijkstraWithHeuristic(STRAIGHT_LINE);
+}
+
+list<Point> MazeGraph::solveDijkstraWithHeuristic(HeuristicType heuristicType) {
 	list<Point> sol;
 
 	unordered_map<GraphNode*, int> dist;
+	unordered_map<GraphNode*, double> heuristic;
 	unordered_map<GraphNode*, vector<GraphNode*>> path;
 	for (GraphNode *node : this->nodes) {
 		dist[node] = INT_MAX;
+
+		switch (heuristicType) {
+		case NONE:
+			heuristic[node] = 0;
+			break;
+		case STRAIGHT_LINE:
+			double h = INT_MAX;
+			for (GraphNode *e : this->exit) {
+				h = min(h, node->pos.euclideanDistance(e->pos));
+			}
+			heuristic[node] = h;
+			break;
+		}
 	}
 	dist[this->start] = 0;
 	path[this->start] = { this->start };
@@ -283,7 +305,7 @@ list<Point> MazeGraph::solveDijkstra() {
 	for (int i = 0; i < this->nodeCount; i++) {
 		GraphNode *curr = nullptr;
 		for (GraphNode *node : this->nodes) {
-			if (!node->visited && (!curr || dist[node] < dist[curr])) {
+			if (!node->visited && (!curr || dist[node] + heuristic[node] < dist[curr] + heuristic[curr])) {
 				curr = node;
 			}
 		}
