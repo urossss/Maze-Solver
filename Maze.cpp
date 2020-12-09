@@ -116,6 +116,17 @@ Maze Maze::generateMaze(int w, int h, int e) {
 		}
 	}
 
+	for (int i = 0; i < w * h / 2; i++) {
+		int x = 1 + rand() % (w - 2);
+		int y = 1 + rand() % (h - 2);
+		if (m.maze[y][x]) {
+			if ((m.maze[y][x - 1] && m.maze[y][x + 1] && !m.maze[y - 1][x] && !m.maze[y + 1][x]) ||
+				(!m.maze[y][x - 1] && !m.maze[y][x + 1] && m.maze[y - 1][x] && m.maze[y + 1][x])) {
+				m.maze[y][x] = 0;
+			}
+		}
+	}
+
 	for (i = 0; i < m.height; i++)
 		delete[] visit[i];
 	delete visit;
